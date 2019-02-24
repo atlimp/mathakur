@@ -1,0 +1,12 @@
+extends layout
+
+block content
+    .container
+        if kennitala
+            p Matur skráður á 
+            strong= kennitala
+        else
+            p Þú ert þegar skráður í mat
+    
+        .footer
+            a(href='/' class='link') Forsíða

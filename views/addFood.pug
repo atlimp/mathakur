@@ -1,0 +1,12 @@
+extends layout
+
+block content
+    .container
+        form(method='post' action='/food' class='form')
+            label(class='label') Kennitala:
+                input(class='input' type='text' name='kt' required)
+            button(class='button') Skrá mig í mat
+
+        .footer
+            a(href='/food' class='link') Skoða skráningar
+            a(href='/users' class='link') Skrá nýjan notanda

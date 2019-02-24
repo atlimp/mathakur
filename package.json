@@ -1,0 +1,18 @@
+{
+  "name": "matradur",
+  "version": "1.0.0",
+  "description": "Bakendi fyrir matrad",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app"
+  },
+  "author": "Atli Marcher Pálsson",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^6.2.0",
+    "express": "^4.16.4",
+    "pg": "^7.8.1",
+    "pug": "^2.0.3"
+  }
+}
