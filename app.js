@@ -10,6 +10,11 @@ app.set('view engine', 'pug');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use((req, res, next) => {
+  res.setHeader('charset', 'utf-8')
+  next();
+});
+
 app.use('/', router);
 
 const {
