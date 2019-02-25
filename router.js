@@ -65,8 +65,9 @@ function addUser(req, res) {
 }
 
 async function download(req, res) {
+    const { charset } = req.query;
     const { rows } = await db('SELECT u.kennitala, u.nafn, m.imat FROM users u LEFT OUTER JOIN matur m ON u.kennitala=m.kennitala WHERE m.dagur=CURRENT_DATE OR m.dagur is NULL;');
-    const csv = createCSV(rows);
+    const csv = createCSV('kennitala;nafn;imat', rows, '\n');    
     res.set('Content-Disposition', 'attachment; filename="gogn.csv"');
     res.send(csv);
 }
