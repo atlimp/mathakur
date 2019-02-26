@@ -67,23 +67,33 @@ async function postFood(req, res) {
 
 async function getFood(req, res) {
     const {
-        t
+        startDate
     } = req.query;
-    if (t) {
-        const today = new Date(t);
+    if (startDate) {
         const {
             rows
-        } = await db('SELECT u.kennitala, u.nafn, m.imat FROM users u, matur m WHERE u.kennitala=m.kennitala AND m.dagur=$1;', [t]);
+        } = await db('SELECT m.dagur, u.kennitala, u.nafn FROM users u JOIN matur m ON u.kennitala=m.kennitala WHERE m.dagur=$1;', [ startDate ]);
+        let data = rows.map(el => {
+            const date = new Date(el.dagur);
+            const dagur = date.toISOString().replace(/T.*/, '').replace(/(\d{4})-(\d{2})-(\d{2})/, '$3-$2-$1');
+            return { dagur, kennitala: el.kennitala, nafn: el.nafn };
+        });
+
         res.render('food', {
-            rows
+            data
         });
     } else {
         const {
             rows
-        } = await db('SELECT u.kennitala, u.nafn, m.imat FROM users u LEFT OUTER JOIN matur m ON u.kennitala=m.kennitala WHERE m.dagur=CURRENT_DATE OR m.dagur is NULL;');
-        console.log(rows);
+        } = await db('SELECT m.dagur, u.kennitala, u.nafn FROM users u JOIN matur m ON u.kennitala=m.kennitala WHERE m.dagur=CURRENT_DATE;');
+        let data = rows.map(el => {
+            const date = new Date(el.dagur);
+            const dagur = date.toISOString().replace(/T.*/, '').replace(/(\d{4})-(\d{2})-(\d{2})/, '$3-$2-$1');
+            return { dagur, kennitala: el.kennitala, nafn: el.nafn };
+        });
+
         res.render('food', {
-            rows
+            data
         });
     }
 }
@@ -98,16 +108,13 @@ function addUser(req, res) {
 
 async function download(req, res) {
     const {
-        charset
-    } = req.query;
-
-    const {
         rows
-    } = await db('SELECT u.kennitala, u.nafn, m.imat FROM users u LEFT OUTER JOIN matur m ON u.kennitala=m.kennitala WHERE m.dagur=CURRENT_DATE OR m.dagur is NULL;');
+    } = await db('SELECT m.dagur, u.kennitala, u.nafn FROM users u JOIN matur m ON u.kennitala=m.kennitala WHERE m.dagur=CURRENT_DATE;');
     
-    const csv = createCSV('kennitala;nafn;imat', rows, '\n');
+    const csv = createCSV('dagur;kennitala;nafn', rows, '\n');
     res.set('Content-Disposition', 'attachment; filename="gogn.csv"');
 
+    console.log(csv)
     res.send(csv);
 }
 

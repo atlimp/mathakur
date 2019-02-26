@@ -4,7 +4,7 @@ function catchErrors(fn) {
 
 function createCSV(header = '', values, lf) {
     return values.reduce((k, u) => {
-        return `${k}${u.kennitala};${u.nafn};${u.imat ? 'Já' : 'Nei'}${lf}`
+        return `${k}${u.dagur};${u.kennitala};${u.nafn}${lf}`
     }, `${header}${lf}`);
 }
   
