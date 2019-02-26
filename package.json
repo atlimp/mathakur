@@ -1,7 +1,7 @@
 {
-  "name": "matradur",
+  "name": "mat-hakur",
   "version": "1.0.0",
-  "description": "Bakendi fyrir matrad",
+  "description": "Mat-hákur skráningarkerfi fyrir HS-Veitur",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
