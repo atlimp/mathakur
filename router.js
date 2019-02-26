@@ -67,35 +67,15 @@ async function postFood(req, res) {
 
 async function getFood(req, res) {
     const {
-        startDate
+        startDate,
+        endDate,
     } = req.query;
-    if (startDate) {
-        const {
-            rows
-        } = await db('SELECT m.dagur, u.kennitala, u.nafn FROM users u JOIN matur m ON u.kennitala=m.kennitala WHERE m.dagur=$1;', [ startDate ]);
-        let data = rows.map(el => {
-            const date = new Date(el.dagur);
-            const dagur = date.toISOString().replace(/T.*/, '').replace(/(\d{4})-(\d{2})-(\d{2})/, '$3-$2-$1');
-            return { dagur, kennitala: el.kennitala, nafn: el.nafn };
-        });
 
-        res.render('food', {
-            data
-        });
-    } else {
-        const {
-            rows
-        } = await db('SELECT m.dagur, u.kennitala, u.nafn FROM users u JOIN matur m ON u.kennitala=m.kennitala WHERE m.dagur=CURRENT_DATE;');
-        let data = rows.map(el => {
-            const date = new Date(el.dagur);
-            const dagur = date.toISOString().replace(/T.*/, '').replace(/(\d{4})-(\d{2})-(\d{2})/, '$3-$2-$1');
-            return { dagur, kennitala: el.kennitala, nafn: el.nafn };
-        });
-
-        res.render('food', {
-            data
-        });
-    }
+    const data = await getFoodBetweenDate(startDate, endDate);
+    
+    res.render('food', {
+        data
+    });
 }
 
 function addFood(req, res) {
@@ -108,14 +88,60 @@ function addUser(req, res) {
 
 async function download(req, res) {
     const {
-        rows
-    } = await db('SELECT m.dagur, u.kennitala, u.nafn FROM users u JOIN matur m ON u.kennitala=m.kennitala WHERE m.dagur=CURRENT_DATE;');
-    
-    const csv = createCSV('dagur;kennitala;nafn', rows, '\n');
+        startDate,
+        endDate,
+    } = req.query;
+
+    const data = await getFoodBetweenDate(startDate, endDate);
+
+    const csv = createCSV('dagur;kennitala;nafn', data, '\n');
     res.set('Content-Disposition', 'attachment; filename="gogn.csv"');
 
-    console.log(csv)
     res.send(csv);
+}
+
+async function getFoodBetweenDate(startDate, endDate) {
+    if (startDate) {
+
+        if (endDate) {
+            const {
+                rows,
+            } = await db('SELECT m.dagur, u.kennitala, u.nafn FROM users u JOIN matur m ON u.kennitala=m.kennitala WHERE m.dagur BETWEEN $1 AND $2;', [ startDate, endDate ]);
+            
+            data = rows.map(el => {
+                const date = new Date(el.dagur);
+                const dagur = date.toISOString().replace(/T.*/, '').replace(/(\d{4})-(\d{2})-(\d{2})/, '$3-$2-$1');
+                return { dagur, kennitala: el.kennitala, nafn: el.nafn };
+            });
+    
+            return data;
+        }
+
+        const {
+            rows,
+        } = await db('SELECT m.dagur, u.kennitala, u.nafn FROM users u JOIN matur m ON u.kennitala=m.kennitala WHERE m.dagur = $1;', [ startDate ]);
+        
+        data = rows.map(el => {
+            const date = new Date(el.dagur);
+            const dagur = date.toISOString().replace(/T.*/, '').replace(/(\d{4})-(\d{2})-(\d{2})/, '$3-$2-$1');
+            return { dagur, kennitala: el.kennitala, nafn: el.nafn };
+        });
+
+        return data;
+    
+    } else {
+        const {
+            rows,
+        } = await db('SELECT m.dagur, u.kennitala, u.nafn FROM users u JOIN matur m ON u.kennitala=m.kennitala WHERE m.dagur = CURRENT_DATE;');
+        
+        data = rows.map(el => {
+            const date = new Date(el.dagur);
+            const dagur = date.toISOString().replace(/T.*/, '').replace(/(\d{4})-(\d{2})-(\d{2})/, '$3-$2-$1');
+            return { dagur, kennitala: el.kennitala, nafn: el.nafn };
+        });
+
+        return data;
+    }
 }
 
 //router.get('/users', catchErrors(getUsers));
