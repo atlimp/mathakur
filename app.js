@@ -1,6 +1,7 @@
 const path = require('path');
 const express = require('express');
-const router = require('./router');
+const food = require('./food');
+const users = require('./users');
 
 const app = express();
 
@@ -15,7 +16,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/', router);
+app.use('/', food);
+app.use('/', users);
 
 const {
   PORT: port,

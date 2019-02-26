@@ -97,3 +97,11 @@ td {
 .dateButton {
     margin-bottom: 1rem;
 }
+
+.errorContainer {
+    margin: auto;
+}
+
+.error {
+    color: #bd1313;
+}
