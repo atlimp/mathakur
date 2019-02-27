@@ -1,7 +1,7 @@
 {
-  "name": "matradur",
+  "name": "mathakur",
   "version": "1.0.0",
-  "description": "Matráður skráningarkerfi fyir HS-Veitur",
+  "description": "Mathákur general submission system",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
