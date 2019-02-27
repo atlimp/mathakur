@@ -17,10 +17,11 @@
         
         document.querySelector('#startDate').value = startDate ? startDate : val;
         document.querySelector('#endDate').value = endDate ? endDate : val;
+
+        setDownloadLink(startDate ? startDate : val, endDate ? endDate : val);
     }
 
     function init() {
-        setDownloadLink();
         setDate();
     }
 

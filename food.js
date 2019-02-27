@@ -3,7 +3,6 @@ const express = require('express');
 const { check, validationResult } = require('express-validator/check');
 const xss = require('xss');
 
-
 const {
     catchErrors,
     createCSV,
@@ -18,11 +17,11 @@ const router = express.Router();
  * 
  */
 const validatePostFood = [
-    check('kt').isLength({
+    check('idNO').isLength({
         min: 10,
         max: 10
     }).withMessage('Kennitala er ekki að réttri lengd'),
-    check('kt').matches(/[0-9]{10}/).withMessage('Kennitala er ekki á réttu formi'),
+    check('idNO').matches(/[0-9]{10}/).withMessage('Kennitala er ekki á réttu formi'),
     (req, res, next) => {
         const errors = validationResult(req);
 
@@ -67,29 +66,32 @@ function addFood(req, res) {
  */
 async function postFood(req, res) {
     const {
-        kt
+        idNO
     } = req.body;
 
     // Check if user has already submitted
     const {
         rows: check
-    } = await db('SELECT * FROM matur WHERE dagur=CURRENT_DATE AND kennitala=$1', [ xss(kt) ]);
-
+    } = await db('SELECT * FROM submission WHERE day=CURRENT_DATE AND idNO=$1', [ xss(idNO) ]);
+    
     if (check.length !== 0) {
         res.render('submitFood');
     } else {
         // Submit food for given id#
         const {
             rows
-        } = await db('INSERT INTO matur VALUES($1, CURRENT_DATE, true) RETURNING *;', [ xss(kt) ]);
+        } = await db('INSERT INTO submission VALUES($1, CURRENT_DATE) RETURNING *;', [ xss(idNO) ]);
 
         const [ user ] = rows;
+
+        console.log('Submission from: ', user);
+
         const {
-            kennitala
+            idno
         } = user;
 
         res.render('submitFood', {
-            kennitala
+            idno
         });
     }
 }
@@ -123,7 +125,7 @@ async function download(req, res) {
         endDate,
     } = req.query;   
 
-    const data = await getFoodBetweenDate(startDate, endDate);
+    const data = await getFoodBetweenDate(startDate, endDate);    
 
     const csv = createCSV('dagur;kennitala;nafn', data, '\n');
     res.set('Content-Disposition', 'attachment; filename="gogn.csv"');
