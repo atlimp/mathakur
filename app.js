@@ -1,5 +1,6 @@
 const path = require('path');
 const express = require('express');
+
 const food = require('./food');
 const users = require('./users');
 
@@ -24,11 +25,11 @@ const {
   HOST: host,
 } = process.env;
 
-function notFoundHandler(req, res, next) { // eslint-disable-line
+function notFoundHandler(req, res, next) {
   res.status(404).render('error', { title: '404', msg: 'Síða finnst ekki' });
 }
 
-function errorHandler(err, req, res, next) { // eslint-disable-line
+function errorHandler(err, req, res, next) {
   console.error(err);
   res.status(500).render('error', { title: 'Villa', msg: 'Eitthvað fór úrskeiðis' });
 }

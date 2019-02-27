@@ -3,6 +3,11 @@ extends layout
 block content
     script(src='/script.js')
     .container
+        if errorMessages
+            .errorContainer
+                ul
+                    each error in errorMessages
+                        li(class='error')= error
         form(action='/food' method='get' class='datePicker')
             label(class='dateLabel' for='startDate') Velja dagsetningu frá:
             input(class='input date' type='date' name='startDate' id='startDate')

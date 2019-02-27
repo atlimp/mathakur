@@ -4,12 +4,23 @@ function catchErrors(fn) {
     return (req, res, next) => fn(req, res, next).catch(next);
 }
 
+/**
+ * 
+ * @param {Optional header in csv} header 
+ * @param {Array of objects for values} values 
+ * @param {New line string} lf 
+ */
 function createCSV(header = '', values, lf) {
     return values.reduce((k, u) => {
         return `${k}${u.dagur};${u.kennitala};${u.nafn}${lf}`
     }, `${header}${lf}`);
 }
 
+/**
+ * Get all submissions within given dates
+ * @param {*} startDate 
+ * @param {*} endDate 
+ */
 async function getFoodBetweenDate(startDate, endDate) {
     if (startDate) {
 
