@@ -13,7 +13,15 @@ DATABASE_URL=
 HOST=
 PORT=
 ```
-Run the createDB.js before you start up the server, to set up the tables in the database.
+Run the createDB.js either by running
+```
+npm run database
+```
+or
+```
+node createDB.js
+```
+before you start up the server to set up the database.  This script also drops the tables if they existed so you can run this to clear out the database.
 
 ## Starting the server
 Simply run `$ npm start` and your server should be up and running.  Open up a browser and go to the HOST:PORT as previously defined in the .env.
