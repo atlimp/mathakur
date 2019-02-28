@@ -1,0 +1,32 @@
+extends layout
+
+block content
+    script(src='/script.js')
+    .container
+        if errorMessages
+            .errorContainer
+                ul
+                    each error in errorMessages
+                        li(class='error')= error
+        form(action='/food' method='get' class='datePicker')
+            label(class='dateLabel' for='startDate') Velja dagsetningu frá:
+            input(class='input date' type='date' name='startDate' id='startDate')
+            label(class='dateLabel' for='endDate') Velja dagsetningu til:
+            input(class='input date' type='date' name='endDate' id='endDate')
+
+            button(class='button dateButton') Sækja
+        table
+            tr
+                th Dagsetning
+                th Kennitala
+                th Nafn
+            if data
+                each row in data
+                    tr
+                        td= row.day
+                        td= row.id_no
+                        td= row.name
+
+        .footer
+            a(href='/food/download' class='link' id='csv') Sækja sem CSV
+            a(href='/' class='link') Forsíða

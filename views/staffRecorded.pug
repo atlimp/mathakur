@@ -1,0 +1,13 @@
+extends layout
+
+block content
+    .container
+        if user
+            p Notandi skráður
+            strong= user.name
+            strong= user.id_no
+        else
+            p Notandi er nú þegar til
+        
+        .footer
+            a(href='/' class='link') Forsíða
