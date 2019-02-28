@@ -28,7 +28,7 @@ const validate = [
 
         if (!errors.isEmpty()) {
             const errorMessages = errors.array().map(i => i.msg);
-            res.render('addUser', { errorMessages });
+            res.render('addStaff', { errorMessages });
             return;
         }
 
@@ -51,7 +51,7 @@ async function postUsers(req, res) {
     } = await db('SELECT * FROM staff WHERE id_no=$1', [ xss(id_no) ]);
 
     if (check.length !== 0) {
-        res.render('submitUser');
+        res.render('staffRecorded');
     } else {
         // Insert user to db with id and name
         const {
@@ -61,14 +61,14 @@ async function postUsers(req, res) {
        
         console.log('User added', user);
         
-        res.render('submitUser', {
+        res.render('staffRecorded', {
             user
         })
     }
 }
 
 function addUser(req, res) {
-    res.render('addUser');
+    res.render('addStaff');
 }
 
 router.post('/users', validate, catchErrors(postUsers));

@@ -27,7 +27,7 @@ const validatePostFood = [
 
         if (!errors.isEmpty()) {
             const errorMessages = errors.array().map(i => i.msg);
-            res.render('addFood', { errorMessages });
+            res.render('submission', { errorMessages });
             return;
         }
 
@@ -109,7 +109,7 @@ async function getFood(req, res) {
 
     const data = await getFoodBetweenDate(xss(startDate), xss(endDate));
 
-    res.render('food', {
+    res.render('table', {
         data
     });
 }
