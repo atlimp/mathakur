@@ -16,11 +16,11 @@ const router = express.Router();
  * Validate name length, cannot be empty or greater than 64
  */
 const validate = [
-    check('idNO').isLength({
+    check('id_no').isLength({
         min: 10,
         max: 10
     }).withMessage('Kennitala er ekki að réttri lengd'),
-    check('idNO').matches(/[0-9]{10}/).withMessage('Kennitala er ekki á réttu formi'),
+    check('id_no').matches(/[0-9]{10}/).withMessage('Kennitala er ekki á réttu formi'),
     check('name').isLength({ min: 1}).withMessage('name má ekki vera tómt'),
     check('name').isLength({ max: 64 }).withMessage('name má mest vera 64 stafir'),
     (req, res, next) => {
@@ -43,12 +43,12 @@ const validate = [
  */
 async function postUsers(req, res) {
     const {
-        idNO,
+        id_no,
         name
     } = req.body;
     const {
         rows: check
-    } = await db('SELECT * FROM staff WHERE idNO=$1', [ xss(idNO) ]);
+    } = await db('SELECT * FROM staff WHERE id_no=$1', [ xss(id_no) ]);
 
     if (check.length !== 0) {
         res.render('submitUser');
@@ -56,7 +56,7 @@ async function postUsers(req, res) {
         // Insert user to db with id and name
         const {
             rows
-        } = await db('INSERT INTO staff VALUES($1, $2) RETURNING *', [ xss(idNO), xss(name) ]);
+        } = await db('INSERT INTO staff VALUES($1, $2) RETURNING *', [ xss(id_no), xss(name) ]);
         const [ user ] = rows;
        
         console.log('User added', user);

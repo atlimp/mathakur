@@ -12,7 +12,7 @@ function catchErrors(fn) {
  */
 function createCSV(header = '', values, lf) {
     return values.reduce((k, u) => {
-        return `${k}${u.day};${u.idno};${u.name}${lf}`
+        return `${k}${u.day};${u.id_no};${u.name}${lf}`
     }, `${header}${lf}`);
 }
 
@@ -27,12 +27,12 @@ async function getFoodBetweenDate(startDate, endDate) {
         if (endDate) {
             const {
                 rows,
-            } = await db('SELECT su.day, st.idNO, st.name FROM staff st JOIN submission su ON st.idNO = su.idNO WHERE su.day BETWEEN $1 AND $2;', [ startDate, endDate ]);
+            } = await db('SELECT su.day, st.id_no, st.name FROM staff st JOIN submission su ON st.id_no = su.id_no WHERE su.day BETWEEN $1 AND $2;', [ startDate, endDate ]);
             
             data = rows.map(el => {
                 const date = new Date(el.day);
                 const day = date.toISOString().replace(/T.*/, '').replace(/(\d{4})-(\d{2})-(\d{2})/, '$3-$2-$1');
-                return { day, idno: el.idno, name: el.name };
+                return { day, id_no: el.id_no, name: el.name };
             });
     
             return data;
@@ -40,12 +40,12 @@ async function getFoodBetweenDate(startDate, endDate) {
 
         const {
             rows,
-        } = await db('SELECT su.day, st.idNO, st.name FROM staff st JOIN submission su ON st.idNO = su.idNO WHERE su.day = $1;', [ startDate ]);
+        } = await db('SELECT su.day, st.id_no, st.name FROM staff st JOIN submission su ON st.id_no = su.id_no WHERE su.day = $1;', [ startDate ]);
         
         data = rows.map(el => {
             const date = new Date(el.day);
             const day = date.toISOString().replace(/T.*/, '').replace(/(\d{4})-(\d{2})-(\d{2})/, '$3-$2-$1');
-            return { day, idno: el.idno, name: el.name };
+            return { day, id_no: el.id_no, name: el.name };
         });
 
         return data;
@@ -53,12 +53,12 @@ async function getFoodBetweenDate(startDate, endDate) {
     } else {
         const {
             rows,
-        } = await db('SELECT su.day, st.idNO, st.name FROM staff st JOIN submission su ON st.idNO = su.idNO WHERE su.day = CURRENT_DATE;');
+        } = await db('SELECT su.day, st.id_no, st.name FROM staff st JOIN submission su ON st.id_no = su.id_no WHERE su.day = CURRENT_DATE;');
         
         data = rows.map(el => {
             const date = new Date(el.day);
             const day = date.toISOString().replace(/T.*/, '').replace(/(\d{4})-(\d{2})-(\d{2})/, '$3-$2-$1');
-            return { day, idno: el.idno, name: el.name };
+            return { day, id_no: el.id_no, name: el.name };
         });
 
         return data;

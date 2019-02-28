@@ -17,11 +17,11 @@ const router = express.Router();
  * 
  */
 const validatePostFood = [
-    check('idNO').isLength({
+    check('id_no').isLength({
         min: 10,
         max: 10
     }).withMessage('Kennitala er ekki að réttri lengd'),
-    check('idNO').matches(/[0-9]{10}/).withMessage('Kennitala er ekki á réttu formi'),
+    check('id_no').matches(/[0-9]{10}/).withMessage('Kennitala er ekki á réttu formi'),
     (req, res, next) => {
         const errors = validationResult(req);
 
@@ -43,7 +43,7 @@ const validateDownload = [
 
         if (!errors.isEmpty()) {
             const errorMessages = errors.array().map(i => i.msg);
-            res.render('food', { errorMessages });
+            res.render('table', { errorMessages });
             return;
         }
 
@@ -55,7 +55,7 @@ const validateDownload = [
  * Food submission page
  */
 function addFood(req, res) {
-    res.render('addFood');
+    res.render('submission');
 }
 
 
@@ -66,32 +66,32 @@ function addFood(req, res) {
  */
 async function postFood(req, res) {
     const {
-        idNO
+        id_no
     } = req.body;
 
     // Check if user has already submitted
     const {
         rows: check
-    } = await db('SELECT * FROM submission WHERE day=CURRENT_DATE AND idNO=$1', [ xss(idNO) ]);
+    } = await db('SELECT * FROM submission WHERE day=CURRENT_DATE AND id_no=$1', [ xss(id_no) ]);
     
     if (check.length !== 0) {
-        res.render('submitFood');
+        res.render('submissionRecorded');
     } else {
         // Submit food for given id#
         const {
             rows
-        } = await db('INSERT INTO submission VALUES($1, CURRENT_DATE) RETURNING *;', [ xss(idNO) ]);
+        } = await db('INSERT INTO submission VALUES($1, CURRENT_DATE) RETURNING *;', [ xss(id_no) ]);
 
         const [ user ] = rows;
 
         console.log('Submission from: ', user);
 
         const {
-            idno
+            id_no: submitted
         } = user;
 
-        res.render('submitFood', {
-            idno
+        res.render('submissionRecorded', {
+            id_no: submitted,
         });
     }
 }
